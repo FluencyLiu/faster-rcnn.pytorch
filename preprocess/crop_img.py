@@ -30,7 +30,7 @@ def crop_img_2d(img_path, ant_path, out_path, sub_array=[3, 2]):
 			img_box = np.array([x_min_img, y_min_img, x_max_img, y_max_img])
 			objs_info = _prune_bndbox(ant_info, img_box)
 			_save_sub_ant_file(sub_ant_path, template_tree, objs_info)
-			sub_img = img_ori.crop(img_box)
+			sub_img = img_ori.crop((x_min_img, y_min_img, x_max_img+1, y_max_img+1))
 			sub_img.save(sub_img_path)
 			sub_index += 1
 
@@ -152,10 +152,13 @@ def _save_sub_ant_file(file_path, template_tree, objs_info):
 
 
 if __name__ == '__main__':
-	file_itr = get_file_list(img_dir='/home/lc/data/mnt2/cc/train_raw_review', img_suffix='.jpg')
-	ant_dir = '/home/lc/data/mnt2/cc/train_raw_review'
-	img_dir = '/home/lc/data/mnt2/cc/train_raw_review'
+
+	ant_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw_review'
+	img_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw_review'
+	out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train'
+	file_itr = get_file_list(img_dir=img_dir, img_suffix='.jpg')
+	
 	for file_name in file_itr:
 		ant_path = ant_dir+'/'+file_name+'.xml'
 		img_path = img_dir+'/'+file_name+'.jpg'
-		crop_img_2d(img_path, ant_path, '/home/lc/data/mnt2/cc/train')
+		crop_img_2d(img_path, ant_path, out_dir)
