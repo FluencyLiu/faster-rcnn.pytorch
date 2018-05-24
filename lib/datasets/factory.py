@@ -64,7 +64,7 @@ for split in ['train', 'val', 'val1', 'val2', 'test']:
 # set up own data
 for split in ['train']:
   name = 'own_data_{}'.format(split)
-  db_path = '/home/lc/data/mnt2/cc/{}'.format(split)
+  db_path = 'data/own_data/{}'.format(split)
   img_suffix = '.jpg'
   f_all_itr = (f for f in os.listdir(db_path))
   f_itr = filter(lambda f:f.endswith(img_suffix), sorted(f_all_itr))
