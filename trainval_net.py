@@ -58,8 +58,8 @@ def parse_args():
                       default=10000, type=int)
 
   parser.add_argument('--save_dir', dest='save_dir',
-                      help='directory to save models', default="/srv/share/jyang375/models",
-                      type=str)
+                      help='directory to save models', default="/home/lc/code/faster-rcnn.pytorch/data/models",
+                      nargs=argparse.REMAINDER)
   parser.add_argument('--nw', dest='num_workers',
                       help='number of worker to load data',
                       default=0, type=int)
@@ -74,7 +74,7 @@ def parse_args():
                       action='store_true')
   parser.add_argument('--bs', dest='batch_size',
                       help='batch_size',
-                      default=1, type=int)
+                      default=2, type=int)
   parser.add_argument('--cag', dest='class_agnostic',
                       help='whether perform class_agnostic bbox regression',
                       action='store_true')
