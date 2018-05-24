@@ -15,8 +15,10 @@ from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
 from datasets.imagenet import imagenet
 from datasets.vg import vg
+from datasets.own_data import own_data
 
 import numpy as np
+import os
 
 # Set up voc_<year>_<split>
 for year in ['2007', '2012']:
@@ -58,6 +60,17 @@ for split in ['train', 'val', 'val1', 'val2', 'test']:
     devkit_path = 'data/imagenet/ILSVRC/devkit'
     data_path = 'data/imagenet/ILSVRC'
     __sets[name] = (lambda split=split, devkit_path=devkit_path, data_path=data_path: imagenet(split,devkit_path,data_path))
+
+# set up own data
+for split in ['train']:
+  name = 'own_data_{}'.format(split)
+  db_path = '/home/lc/data/mnt2/cc/{}'.format(split)
+  img_suffix = '.jpg'
+  f_all_itr = (f for f in os.listdir(db_path))
+  f_itr = filter(lambda f:f.endswith(img_suffix), sorted(f_all_itr))
+  f_itr = map(lambda f:f.split('.',1)[0], f_itr)
+  f_list = list(f_itr)
+  __sets[name] = (lambda split=split, db_name='cc', file_name_list=f_list, db_path=db_path, img_suffix=img_suffix: own_data(split, db_name, file_name_list, db_path, img_suffix))
 
 def get_imdb(name):
   """Get an imdb (image database) by name."""
