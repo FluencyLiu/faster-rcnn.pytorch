@@ -2,6 +2,7 @@ data/*
 *.pyc
 *~
 images/*
+output/*
 *.cu.o
 *.o
 *.so
