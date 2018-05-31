@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import PIL
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 import xml.etree.ElementTree as ET
 
 # get file name iterator
@@ -14,7 +14,6 @@ def get_file_list(img_dir, img_suffix='.jpg'):
 # view bounding box in test images.
 def view_bndboxes_2d(img_path, ant_path, out_path):
 	img = PIL.Image.open(img_path)
-	pixel_map = img.load()
 	boxes = _load_ant_file(ant_path)
 	if boxes is None:
 		img.save(out_path)
@@ -23,7 +22,7 @@ def view_bndboxes_2d(img_path, ant_path, out_path):
 	draw = ImageDraw.Draw(img)
 	for i in range(boxes.shape[0]):
 		[xmin,ymin,xmax,ymax] = boxes[i, :]
-		draw.rectangle([xmin,ymin,xmax,ymax], outline=(0,0,0))
+		draw.rectangle([xmin,ymin,xmax,ymax], outline=(0,255,0))
 	img.save(out_path)
 	return
 
@@ -54,6 +53,6 @@ if __name__ == '__main__':
 	for file_name in file_itr:
 		ant_path = ant_dir+'/'+file_name+'.xml'
 		img_path = img_dir+'/'+file_name+'.jpg'
-		out_path = out_dir+'/'+file_name+'.jpg'
+		out_path = out_dir+'/'+file_name+'-gt.jpg'
 		print(img_path)
 		view_bndboxes_2d(img_path, ant_path, out_path)

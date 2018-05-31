@@ -62,7 +62,7 @@ for split in ['train', 'val', 'val1', 'val2', 'test']:
     __sets[name] = (lambda split=split, devkit_path=devkit_path, data_path=data_path: imagenet(split,devkit_path,data_path))
 
 # set up own data
-for split in ['train']:
+for split in ['train', 'test']:
   name = 'own_data_{}'.format(split)
   db_path = 'data/own_data/{}'.format(split)
   img_suffix = '.jpg'
@@ -70,7 +70,7 @@ for split in ['train']:
   f_itr = filter(lambda f:f.endswith(img_suffix), sorted(f_all_itr))
   f_itr = map(lambda f:f.split('.',1)[0], f_itr)
   f_list = list(f_itr)
-  __sets[name] = (lambda split=split, db_name='cc', file_name_list=f_list, db_path=db_path, img_suffix=img_suffix: own_data(split, db_name, file_name_list, db_path, img_suffix))
+  __sets[name] = (lambda split=split, db_name=name, file_name_list=f_list, db_path=db_path, img_suffix=img_suffix: own_data(split, db_name, file_name_list, db_path, img_suffix))
 
 def get_imdb(name):
   """Get an imdb (image database) by name."""

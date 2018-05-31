@@ -152,10 +152,10 @@ def _save_sub_ant_file(file_path, template_tree, objs_info):
 
 
 if __name__ == '__main__':
-
-	ant_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw_review'
-	img_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw_review'
-	out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train'
+	_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/test_raw'
+	ant_dir = _dir
+	img_dir = _dir
+	out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/test'
 	file_itr = get_file_list(img_dir=img_dir, img_suffix='.jpg')
 	
 	for file_name in file_itr:

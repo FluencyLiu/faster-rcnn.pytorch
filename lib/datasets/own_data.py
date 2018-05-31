@@ -38,7 +38,7 @@ except NameError:
 
 class own_data(imdb):
     def __init__(self, image_set, db_name, file_name_list, db_path=None, img_suffix='.jpg'):
-        imdb.__init__(self, db_name + '_' + image_set)
+        imdb.__init__(self, db_name)
         self._image_set = image_set
         self._data_path = self._get_default_path() if db_path is None \
             else db_path

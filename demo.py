@@ -236,7 +236,9 @@ if __name__ == '__main__':
     num_images = 0
   else:
     imglist = os.listdir(args.image_dir)
-    num_images = len(imglist)
+    # exclude all the other files from file_list
+    imglist = list(filter(lambda f:f.endswith('.jpg'), imglist))
+    num_images = len(list(imglist))
 
   print('Loaded Photo: {} images.'.format(num_images))
 
