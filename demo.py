@@ -34,6 +34,7 @@ from model.utils.net_utils import save_net, load_net, vis_detections
 from model.utils.blob import im_list_to_blob
 from model.faster_rcnn.vgg16 import vgg16
 from model.faster_rcnn.resnet import resnet
+from preprocess import crop_img
 import pdb
 
 try:
@@ -65,6 +66,9 @@ def parse_args():
   parser.add_argument('--image_dir', dest='image_dir',
                       help='directory to load images for demo',
                       default="images")
+  parser.add_argument('--output_dir', dest='output_dir',
+                      help='directory to save images for demo',
+                      default="output")
   parser.add_argument('--cuda', dest='cuda',
                       help='whether use CUDA',
                       action='store_true')
@@ -326,6 +330,11 @@ if __name__ == '__main__':
       det_toc = time.time()
       detect_time = det_toc - det_tic
       misc_tic = time.time()
+
+      boxes_output = np.empty(shape=[0, 4], dtype=np.uint16)
+      gt_classes_output = []
+      ishards_output = np.empty(shape=[0], dtype=np.int32)
+
       if vis:
           im2show = np.copy(im)
       for j in xrange(1, len(own_data_classes)):
@@ -344,8 +353,19 @@ if __name__ == '__main__':
             cls_dets = cls_dets[order]
             keep = nms(cls_dets, cfg.TEST.NMS, force_cpu=not cfg.USE_GPU_NMS)
             cls_dets = cls_dets[keep.view(-1).long()]
+            for i_box in range(cls_dets.shape[0]):
+              if cls_dets[i_box,4]>0.5:
+                boxes_output = np.append(boxes_output, np.expand_dims(cls_dets[i_box,:4], axis=0), axis=0).astype(np.uint16)
+                # ishard is 0 as default.
+                ishards_output = np.append(ishards_output, [0], axis=0)
+                gt_classes_output.append(own_data_classes[j])
+
             if vis:
               im2show = vis_detections(im2show, own_data_classes[j], cls_dets.cpu().numpy(), 0.5)
+
+      objs_info = {'boxes': boxes_output,
+                   'gt_classes_name': gt_classes_output,
+                   'gt_ishard': ishards_output}
 
       misc_toc = time.time()
       nms_time = misc_toc - misc_tic
@@ -355,12 +375,15 @@ if __name__ == '__main__':
                            .format(num_images + 1, len(imglist), detect_time, nms_time))
           sys.stdout.flush()
 
-      if vis and webcam_num == -1:
+      if webcam_num == -1:
           # cv2.imshow('test', im2show)
           # cv2.waitKey(0)
-          result_path = os.path.join(args.image_dir, imglist[num_images][:-4] + "_det.jpg")
-          cv2.imwrite(result_path, im2show)
-      else:
+          result_path = os.path.join(args.output_dir, imglist[num_images][:-4] + ".xml")
+          crop_img.save_ant_file(result_path, objs_info)
+          if vis:
+            result_path = os.path.join(args.output_dir, imglist[num_images][:-4] + "_det.jpg")
+            cv2.imwrite(result_path, im2show)
+      elif vis:
           im2showRGB = cv2.cvtColor(im2show, cv2.COLOR_BGR2RGB)
           cv2.imshow("frame", im2showRGB)
           total_toc = time.time()

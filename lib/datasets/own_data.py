@@ -242,7 +242,7 @@ class own_data(imdb):
                    else self._comp_id)
         return comp_id
 
-    def _get_voc_results_file_template(self):
+    def _get_own_results_file_template(self):
         # VOCdevkit/results/VOC2007/Main/<comp_id>_det_test_aeroplane.txt
         filename = self._get_comp_id() + '_det_' + self._image_set + '_{:s}.txt'
         filedir = os.path.join(self._devkit_path, 'results', 'VOC' + self._year, 'Main')
@@ -251,12 +251,12 @@ class own_data(imdb):
         path = os.path.join(filedir, filename)
         return path
 
-    def _write_voc_results_file(self, all_boxes):
+    def _write_own_results_file(self, all_boxes):
         for cls_ind, cls in enumerate(self.classes):
             if cls == '__background__':
                 continue
-            print('Writing {} VOC results file'.format(cls))
-            filename = self._get_voc_results_file_template().format(cls)
+            print('Writing {} own results file'.format(cls))
+            filename = self._get_own_results_file_template().format(cls)
             with open(filename, 'wt') as f:
                 for im_ind, index in enumerate(self.image_index):
                     dets = all_boxes[cls_ind][im_ind]
@@ -291,7 +291,7 @@ class own_data(imdb):
         for i, cls in enumerate(self._classes):
             if cls == '__background__':
                 continue
-            filename = self._get_voc_results_file_template().format(cls)
+            filename = self._get_own_results_file_template().format(cls)
             rec, prec, ap = voc_eval(
                 filename, annopath, imagesetfile, cls, cachedir, ovthresh=0.5,
                 use_07_metric=use_07_metric)
@@ -330,7 +330,7 @@ class own_data(imdb):
         status = subprocess.call(cmd, shell=True)
 
     def evaluate_detections(self, all_boxes, output_dir):
-        self._write_voc_results_file(all_boxes)
+        self._write_own_results_file(all_boxes)
         self._do_python_eval(output_dir)
         if self.config['matlab_eval']:
             self._do_matlab_eval(output_dir)
@@ -338,7 +338,7 @@ class own_data(imdb):
             for cls in self._classes:
                 if cls == '__background__':
                     continue
-                filename = self._get_voc_results_file_template().format(cls)
+                filename = self._get_own_results_file_template().format(cls)
                 os.remove(filename)
 
     def competition_mode(self, on):
@@ -351,7 +351,15 @@ class own_data(imdb):
 
 
 if __name__ == '__main__':
-    d = pascal_voc('trainval', '2007')
+    split = 'train'
+    name = 'own_data_{}'.format(split)
+    db_path = 'data/own_data/{}'.format(split)
+    img_suffix = '.jpg'
+    f_all_itr = (f for f in os.listdir(db_path))
+    f_itr = filter(lambda f:f.endswith(img_suffix), sorted(f_all_itr))
+    f_itr = map(lambda f:f.split('.',1)[0], f_itr)
+    f_list = list(f_itr)
+    d = own_data(split, name, f_list, db_path, img_suffix)
     res = d.roidb
     from IPython import embed;
 

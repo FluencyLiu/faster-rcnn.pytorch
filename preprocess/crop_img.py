@@ -17,7 +17,7 @@ def crop_img_2d(img_path, ant_path, out_path, sub_array=[3, 2]):
 	img_size = img_ori.size
 	grid_array = ([0]+[math.floor((i+1)*img_size[0]/float(sub_array[0])) for i in range(sub_array[0])], [0]+[math.floor((i+1)*img_size[1]/float(sub_array[1])) for i in range(sub_array[1])])
 	get_sub_path = lambda sub_index, ori_path, out_path:out_path + '/' + os.path.splitext(os.path.basename(ori_path))[0] + '-%d'%(sub_index) + os.path.splitext(os.path.basename(ori_path))[1]
-	ant_info, template_tree = _load_ant_file(ant_path)
+	ant_info, template_tree = load_ant_file(ant_path)
 	sub_index = 0
 	for sub_index_x in range(sub_array[0]):
 		for sub_index_y in range(sub_array[1]):
@@ -29,13 +29,13 @@ def crop_img_2d(img_path, ant_path, out_path, sub_array=[3, 2]):
 			y_max_img = grid_array[1][sub_index_y+1]-1
 			img_box = np.array([x_min_img, y_min_img, x_max_img, y_max_img])
 			objs_info = _prune_bndbox(ant_info, img_box)
-			_save_sub_ant_file(sub_ant_path, template_tree, objs_info)
+			save_ant_file(sub_ant_path, objs_info, template_tree)
 			sub_img = img_ori.crop((x_min_img, y_min_img, x_max_img+1, y_max_img+1))
 			sub_img.save(sub_img_path)
 			sub_index += 1
 
 # load annotation file and return objects information
-def _load_ant_file(ant_path):
+def load_ant_file(ant_path):
 	tree = ET.parse(ant_path)
 	objs = tree.findall('object')
 	boxes = np.empty(shape=[0, 4], dtype=np.uint16)
@@ -121,11 +121,32 @@ def _new_cord(cord, length):
 
 
 # save annotation file for cropped images.
-def _save_sub_ant_file(file_path, template_tree, objs_info):
-	root = template_tree.getroot()
-	objs = template_tree.findall('object')
-	for obj in objs:
-		root.remove(obj)
+def save_ant_file(file_path, objs_info, template_tree=None):
+	if template_tree == None:
+		root = ET.Element('annotation')
+		folder = ET.SubElement(root, 'folder')
+		folder.text = 'undefined'
+		filename = ET.SubElement(root, 'filename')
+		filename.text = 'undefined'
+		path = ET.SubElement(root, 'path')
+		path.text = 'undefined'
+		source = ET.SubElement(root, 'source')
+		database = ET.SubElement(source, 'database')
+		database.text = 'unknown'
+		size = ET.SubElement(root, 'size')
+		width = ET.SubElement(size, 'width')
+		height = ET.SubElement(size, 'height')
+		depth = ET.SubElement(size, 'depth')
+		width.text = str(0)
+		height.text = str(0)
+		depth.text = str(0)
+		segmented = ET.SubElement(root, 'segmented')
+		segmented.text = str(0)
+	else:
+		root = template_tree.getroot()
+		objs = template_tree.findall('object')
+		for obj in objs:
+			root.remove(obj)
 
 	for i in range(len(objs_info['gt_classes_name'])):
 		obj = ET.SubElement(root, 'object')
