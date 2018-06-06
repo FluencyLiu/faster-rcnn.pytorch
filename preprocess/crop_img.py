@@ -70,12 +70,12 @@ def _prune_bndbox(objs_info, img_box):
 	y_ori = img_box[1]
 	img_width = img_box[2] - img_box[0] + 1
 	img_height = img_box[3] - img_box[1] + 1
-	objs_info['boxes'].astype(np.float32)
+	objs_boxes = objs_info['boxes'].astype(np.float32)
 	new_boxes = np.zeros(objs_info['boxes'].shape, dtype=np.float32)
-	new_boxes[:, 0] = objs_info['boxes'][:, 0] - x_ori
-	new_boxes[:, 2] = objs_info['boxes'][:, 2] - x_ori
-	new_boxes[:, 1] = objs_info['boxes'][:, 1] - y_ori
-	new_boxes[:, 3] = objs_info['boxes'][:, 3] - y_ori
+	new_boxes[:, 0] = objs_boxes[:, 0] - x_ori
+	new_boxes[:, 2] = objs_boxes[:, 2] - x_ori
+	new_boxes[:, 1] = objs_boxes[:, 1] - y_ori
+	new_boxes[:, 3] = objs_boxes[:, 3] - y_ori
 
 	# prune boxes
 	boxes = np.empty(shape=[0, 4], dtype=np.uint16)
@@ -173,13 +173,14 @@ def save_ant_file(file_path, objs_info, template_tree=None):
 
 
 if __name__ == '__main__':
-	_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/test_raw'
+	_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw'
 	ant_dir = _dir
 	img_dir = _dir
-	out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/test'
+	out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train'
 	file_itr = get_file_list(img_dir=img_dir, img_suffix='.jpg')
 	
 	for file_name in file_itr:
 		ant_path = ant_dir+'/'+file_name+'.xml'
 		img_path = img_dir+'/'+file_name+'.jpg'
+		print(img_path)
 		crop_img_2d(img_path, ant_path, out_dir)
