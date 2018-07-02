@@ -34,7 +34,7 @@ from model.utils.net_utils import save_net, load_net, vis_detections
 from model.utils.blob import im_list_to_blob
 from model.faster_rcnn.vgg16 import vgg16
 from model.faster_rcnn.resnet import resnet
-from preprocess import crop_img
+from utils import general
 import pdb
 
 try:
@@ -231,7 +231,7 @@ if __name__ == '__main__':
   start = time.time()
   max_per_image = 100
   thresh = 0.05
-  vis = True
+  vis = args.vis
 
   webcam_num = args.webcam_num
   # Set up webcam or get image directories
@@ -379,7 +379,7 @@ if __name__ == '__main__':
           # cv2.imshow('test', im2show)
           # cv2.waitKey(0)
           result_path = os.path.join(args.output_dir, imglist[num_images][:-4] + ".xml")
-          crop_img.save_ant_file(result_path, objs_info)
+          general.save_annt_file(result_path, objs_info)
           if vis:
             result_path = os.path.join(args.output_dir, imglist[num_images][:-4] + "_det.jpg")
             cv2.imwrite(result_path, im2show)

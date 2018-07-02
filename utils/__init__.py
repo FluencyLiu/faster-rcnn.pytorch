@@ -1,1 +1,1 @@
-from .crop_img import *
+from .general import *
