@@ -59,9 +59,9 @@ def _restore_cord(objs_info, img_box):
 	return objs_info
 
 if __name__ == '__main__':
-	img_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/all_neg/test_raw'
-	input_dir = '/home/lc/code/faster-rcnn.pytorch/output/rcnn/all_neg_test'
-	out_dir = '/home/lc/code/faster-rcnn.pytorch/output/restore/all_neg_test'
+	img_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/test_0708_raw'
+	input_dir = '/home/lc/code/faster-rcnn.pytorch/output/rcnn/test_0708'
+	out_dir = '/home/lc/code/faster-rcnn.pytorch/output/restore/test_0708'
 	file_itr = ut.get_file_list(img_dir=img_dir, img_suffix='.jpg')
 	
 	for file_name in file_itr:

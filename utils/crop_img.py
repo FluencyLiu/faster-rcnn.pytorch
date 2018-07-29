@@ -108,29 +108,29 @@ def _new_cord(cord, length):
 
 if __name__ == '__main__':
 	# for faster rcnn================
-	# _dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw'
-	# annt_dir = _dir
-	# img_dir = _dir
-	# out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train'
-	# file_itr = ut.get_file_list(img_dir=img_dir, img_suffix='.jpg')
-	
-	# for file_name in file_itr:
-	# 	annt_path = annt_dir+'/'+file_name+'.xml'
-	# 	img_path = img_dir+'/'+file_name+'.jpg'
-	# 	print(img_path)
-	# 	_crop_img_2d(img_path, annt_path, out_dir)
-	# 	# crop_img_2d(img_path, out_dir)
-
-	# for mask rcnn==================
-	_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw'
+	_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/raw_data/data_raw_5'
 	annt_dir = _dir
 	img_dir = _dir
-	out_dir = '/home/lc/code/Mask_RCNN/data/own_data'
+	out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/test_0708'
 	file_itr = ut.get_file_list(img_dir=img_dir, img_suffix='.jpg')
 	
 	for file_name in file_itr:
 		annt_path = annt_dir+'/'+file_name+'.xml'
 		img_path = img_dir+'/'+file_name+'.jpg'
 		print(img_path)
-		_crop_img_2d(img_path, annt_path, out_dir, sub_array=[6, 4])
-		# crop_img_2d(img_path, out_dir)
+		# _crop_img_2d(img_path, annt_path, out_dir)
+		crop_img_2d(img_path, out_dir)
+
+	# # for mask rcnn==================
+	# _dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw'
+	# annt_dir = _dir
+	# img_dir = _dir
+	# out_dir = '/home/lc/code/Mask_RCNN/data/own_data'
+	# file_itr = ut.get_file_list(img_dir=img_dir, img_suffix='.jpg')
+	
+	# for file_name in file_itr:
+	# 	annt_path = annt_dir+'/'+file_name+'.xml'
+	# 	img_path = img_dir+'/'+file_name+'.jpg'
+	# 	print(img_path)
+	# 	_crop_img_2d(img_path, annt_path, out_dir, sub_array=[6, 4])
+	# 	# crop_img_2d(img_path, out_dir)
