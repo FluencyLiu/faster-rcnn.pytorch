@@ -3,6 +3,7 @@ data/*
 *~
 images/*
 output/*
+output
 *.cu.o
 *.o
 *.so
