@@ -106,20 +106,51 @@ def _new_cord(cord, length):
 		new_cord = length-1
 	return new_cord
 
+
+# crop images with the sliding window to eliminate the effect of crop on the border areas
+def _crop_img_slide_2d(img_path, annt_path, out_dir, sub_array=[3, 2]):
+	get_sub_path = lambda sub_index, ori_path, out_dir:out_dir + '/' + os.path.splitext(os.path.basename(ori_path))[0] + '-%d'%(sub_index) + os.path.splitext(os.path.basename(ori_path))[1]
+
+	img_ori = PIL.Image.open(img_path)
+	img_size = img_ori.size
+	sub_size = [math.floor(img_size[idx]/float(num_itm)) for idx, num_itm in enumrate(sub_array)]
+	sub_array = [num_itm*2-1 for num_itm in sub_array]
+	grid_array = ([math.floor(i*img_size[0]/float(sub_array[0]+1)) for i in range(sub_array[0])],
+					[math.floor(i*img_size[1]/float(sub_array[1]+1)) for i in range(sub_array[1])])
+	
+	annt_info, template_tree = ut.load_annt_file(annt_path)
+	sub_index = 0
+	for sub_index_x in range(sub_array[0]):
+		for sub_index_y in range(sub_array[1]):
+			sub_img_path = get_sub_path(sub_index, img_path, out_dir)
+			sub_annt_path = get_sub_path(sub_index, annt_path, out_dir)
+			x_min_img = grid_array[0][sub_index_x]
+			y_min_img = grid_array[1][sub_index_y]
+			x_max_img = grid_array[0][sub_index_x] + sub_size[0]
+			y_max_img = grid_array[1][sub_index_y] + sub_size[1]
+			img_box = np.array([x_min_img, y_min_img, x_max_img, y_max_img])
+			objs_info = _prune_bndbox(annt_info, img_box)
+			ut.save_annt_file(sub_annt_path, objs_info, template_tree)
+			sub_img = img_ori.crop((x_min_img, y_min_img, x_max_img+1, y_max_img+1))
+			sub_img.save(sub_img_path)
+			sub_index += 1
+
+
+
 if __name__ == '__main__':
 	# for faster rcnn================
-	_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/raw_data/data_raw_5'
+	_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/raw_data/test'
 	annt_dir = _dir
 	img_dir = _dir
-	out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/test_0708'
+	out_dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/test'
 	file_itr = ut.get_file_list(img_dir=img_dir, img_suffix='.jpg')
 	
 	for file_name in file_itr:
 		annt_path = annt_dir+'/'+file_name+'.xml'
 		img_path = img_dir+'/'+file_name+'.jpg'
 		print(img_path)
-		# _crop_img_2d(img_path, annt_path, out_dir)
-		crop_img_2d(img_path, out_dir)
+		_crop_img_2d(img_path, annt_path, out_dir)
+		# crop_img_2d(img_path, out_dir)
 
 	# # for mask rcnn==================
 	# _dir = '/home/lc/code/faster-rcnn.pytorch/data/own_data/train_raw'
