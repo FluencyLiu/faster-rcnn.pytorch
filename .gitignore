@@ -6,3 +6,8 @@ output/*
 *.cu.o
 *.o
 *.so
+*.txt
+*.xml
+*.md
+*.jpg
+*.bmp
